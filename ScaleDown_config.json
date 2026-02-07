@@ -1,0 +1,7 @@
+{
+    "compression_level": "high",
+    "remove_signatures": true,
+    "remove_quoted_text": true,
+    "summarization_model": "heuristic-v2",
+    "target_reduction": 0.85
+}

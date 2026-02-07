@@ -1,0 +1,9 @@
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Subject: Invoice #1234 Overdue
+From: billing@saas.com
+To: me@company.com
+Date: Sat, 07 Feb 2026 13:16:35 -0000
+
+Your payment is overdue. Please pay immediately to avoid service interruption.

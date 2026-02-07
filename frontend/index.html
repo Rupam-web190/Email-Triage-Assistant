@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Triage Assistant - Social Feed</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Left Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+                <span>Triage.AI</span>
+            </div>
+            
+            <div class="nav-links">
+                <div class="nav-item active" data-mode="single" onclick="switchMode('single')">
+                    <span>🏠</span> <span>Feed</span>
+                </div>
+                <div class="nav-item" data-mode="batch" onclick="switchMode('batch')">
+                    <span>📦</span> <span>Batch Process</span>
+                </div>
+                <div class="nav-item" data-mode="reply" onclick="switchMode('reply')">
+                    <span>💬</span> <span>Messages</span>
+                </div>
+                <div class="nav-item" data-mode="dashboard" onclick="switchMode('dashboard')">
+                    <span>📊</span> <span>Analytics</span>
+                </div>
+                <div class="nav-item" data-mode="profile" onclick="switchMode('profile')">
+                    <span>👤</span> <span>Profile</span>
+                </div>
+                <div class="nav-item" onclick="toggleTheme()">
+                    <span>🌓</span> <span>Theme</span>
+                </div>
+            </div>
+
+            <div class="user-profile" style="margin-top: auto; display: flex; align-items: center; gap: 0.75rem; cursor: pointer;" onclick="switchMode('profile')">
+                <div class="avatar">RM</div>
+                <div>
+                    <div style="font-weight: 600; font-size: 0.875rem;">Rupam Manager</div>
+                    <div style="color: var(--text-secondary); font-size: 0.75rem;">@rupam_m</div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Center Feed -->
+        <main class="main-feed" id="main-content">
+            
+            <!-- Default Feed View -->
+            <div id="view-single" class="view-section">
+                <div class="feed-header">
+                    <h2>Home</h2>
+                </div>
+
+                <!-- Create Post (Upload EML) -->
+                <div class="create-post-card">
+                    <div class="avatar">RM</div>
+                    <div class="input-group">
+                        <textarea class="post-input" placeholder="What needs triaging today?" rows="2" readonly onclick="triggerFileUpload()"></textarea>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; gap: 0.5rem; color: var(--primary-color);">
+                                <span onclick="triggerFileUpload()" style="cursor: pointer;">📎 Upload EML</span>
+                            </div>
+                            <button class="btn-primary" onclick="triggerFileUpload()">Analyze</button>
+                            <input type="file" id="eml-upload" hidden accept=".eml" onchange="handleFileUpload(this)">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feed Stream -->
+                <div id="feed-stream">
+                    <!-- Posts will be injected here -->
+                    <div class="post-card" id="welcome-post">
+                        <div class="post-header">
+                            <div class="user-info">
+                                <div class="avatar" style="background: var(--accent-color)">AI</div>
+                                <div class="user-meta">
+                                    <h4>Triage Assistant</h4>
+                                    <span>Just now</span>
+                                </div>
+                            </div>
+                            <span class="badge badge-action">System</span>
+                        </div>
+                        <div class="post-content">
+                            <h3>Welcome back, Rupam! 👋</h3>
+                            <p>I'm ready to help you triage your inbox. Upload an .eml file or start a batch process to get started.</p>
+                        </div>
+                        <div class="post-actions">
+                            <div class="action-btn" onclick="toggleLike(this)">❤️ Like</div>
+                            <div class="action-btn" onclick="toggleComments(this)">💬 Comment</div>
+                            <div class="action-btn">↪️ Share</div>
+                        </div>
+                        <div class="comments-section hidden">
+                             <div class="comment-input-row">
+                                <div class="avatar is-small">RM</div>
+                                <input type="text" placeholder="Write a comment..." onkeypress="handleComment(event, this)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Batch View -->
+            <div id="view-batch" class="view-section hidden">
+                <div class="feed-header">
+                    <h2>Batch Processing</h2>
+                    <button class="btn-primary" onclick="runBatchProcess()">Start Batch</button>
+                </div>
+                <div id="batch-results">
+                    <!-- Results injected here -->
+                    <div class="post-card" style="text-align: center; color: var(--text-secondary);">
+                        <p>No batch processes running.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages View -->
+            <div id="view-reply" class="view-section hidden">
+                <div class="feed-header">
+                    <h2>Messages & Drafts</h2>
+                </div>
+                <div id="reply-thread-list"></div>
+            </div>
+            
+            <!-- Dashboard View -->
+             <div id="view-dashboard" class="view-section hidden">
+                <div class="feed-header">
+                    <h2>Productivity Dashboard</h2>
+                </div>
+                 <div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                    <div class="post-card">
+                         <h3 style="margin-top:0">Emails Processed</h3>
+                         <h1 id="dash-processed" style="color: var(--primary-color)">0</h1>
+                    </div>
+                    <div class="post-card">
+                         <h3 style="margin-top:0">Time Saved</h3>
+                         <h1 id="dash-saved" style="color: var(--accent-color)">0h</h1>
+                    </div>
+                    <div class="post-card">
+                         <h3 style="margin-top:0">Accuracy</h3>
+                         <h1 id="dash-accuracy" style="color: var(--success-color)">98%</h1>
+                    </div>
+                    <div class="post-card">
+                         <h3 style="margin-top:0">Pending Review</h3>
+                         <h1 style="color: var(--warning-color)">5</h1>
+                    </div>
+                 </div>
+            </div>
+
+            <!-- Profile View -->
+            <div id="view-profile" class="view-section hidden">
+                <div class="feed-header">
+                    <h2>My Profile</h2>
+                    <button class="btn-primary">Edit Profile</button>
+                </div>
+                
+                <div class="post-card" style="text-align: center;">
+                    <div class="avatar" style="width: 80px; height: 80px; font-size: 2rem; margin: 0 auto 1rem auto;">RM</div>
+                    <h2 style="margin: 0;">Rupam Manager</h2>
+                    <p style="color: var(--text-secondary);">@rupam_m</p>
+                    <p>Senior Project Manager | Email Zero Enthusiast</p>
+                    
+                    <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                        <div>
+                            <div style="font-weight: 700; font-size: 1.25rem;">1,243</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">Processed</div>
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; font-size: 1.25rem;">89%</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">Efficiency</div>
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; font-size: 1.25rem;">12</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">Connections</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Recent Activity</h3>
+                <div class="post-card">
+                    <p>Processed <strong>Project Alpha</strong> thread 2 hours ago.</p>
+                </div>
+                <div class="post-card">
+                    <p>Replied to <strong>Client Meeting</strong> thread 5 hours ago.</p>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="widgets">
+            <div class="widget-card">
+                <span class="widget-title">Trending Topics</span>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div>
+                        <div style="font-size: 0.875rem; font-weight: 600;">#UrgentDeadlines</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">5 emails</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.875rem; font-weight: 600;">#ClientMeetings</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">3 events</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.875rem; font-weight: 600;">#QuarterlyReview</div>
+                        <div style="font-size: 0.75rem; color: var(--text-secondary);">Trending now</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget-card">
+                <span class="widget-title">Suggested Actions</span>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <button class="btn-primary" style="width: 100%; font-size: 0.875rem;">Review "Project Alpha"</button>
+                    <button style="background: none; border: 1px solid var(--border-color); color: var(--text-main); padding: 0.5rem; border-radius: 99px; cursor: pointer;">Unsubscribe (5)</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <div id="loading" class="loading-overlay hidden">
+        <div class="spinner"></div>
+    </div>
+    <div id="notification-container"></div>
+
+    <script src="script.js"></script>
+    <script>
+        // Dark Mode Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            body.setAttribute('data-theme', isDark ? 'light' : 'dark');
+        }
+    </script>
+</body>
+</html>
