@@ -167,6 +167,12 @@ Email-Triage-Assistant/
 
 ---
 
+## Demo
+
+### Triage Demo
+[▶️ Watch Demo Video](demo/triage_demo.mp4)
+
+
 ## 🤝 Contributing
 
 We welcome contributions! Please follow the **GitHub Flow**:
