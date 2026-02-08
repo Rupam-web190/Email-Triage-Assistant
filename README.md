@@ -2,7 +2,7 @@
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/Rupam-web190/Email-Triage-Assistant)
 [![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/Rupam-web190/Email-Triage-Assistant/releases)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org/)
 
 A production-ready, full-stack email triage assistant designed to process 50+ email threads simultaneously. Leveraging the proprietary **ScaleDown** compression algorithm, it reduces email content by up to 85% while maintaining context, enabling rapid decision-making through a modern, responsive social-media-style interface.
@@ -193,4 +193,4 @@ We welcome contributions! Please follow the **GitHub Flow**:
 
 ## 📄 License
 
-Distributed under the GPL-3.0 License. See `LICENSE` for more information.
+Distributed under the MIT License. See `LICENSE` for more information.
