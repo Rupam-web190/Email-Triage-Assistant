@@ -2,9 +2,9 @@ const API_URL = 'http://127.0.0.1:5000';
 
 // State
 let currentUser = {
-    name: 'John Manager',
-    handle: '@john_m',
-    avatar: 'JM'
+    name: 'Rupam Manager',
+    handle: '@rupam_m',
+    avatar: 'RM'
 };
 
 // Pagination State

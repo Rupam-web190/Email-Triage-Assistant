@@ -37,6 +37,33 @@ app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024  # 10MB limit
 CORS(app)
 
+# Performance Monitoring Middleware
+@app.before_request
+def start_timer():
+    request.start_time = time.time()
+
+@app.after_request
+def log_request(response):
+    if hasattr(request, 'start_time'):
+        duration = time.time() - request.start_time
+        logger.info(f"{request.method} {request.path} {response.status_code} - {duration:.4f}s")
+    return response
+
+# Global Error Handler
+@app.errorhandler(Exception)
+def handle_exception(e):
+    logger.error(f"Unhandled Exception: {str(e)}", exc_info=True)
+    return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    """System health check"""
+    return jsonify({
+        "status": "healthy", 
+        "timestamp": datetime.now().isoformat(),
+        "version": "2.0.0"
+    })
+
 # Initialize instances
 gmail_parser = GmailParser()
 triage_engine = TriageEngine()
