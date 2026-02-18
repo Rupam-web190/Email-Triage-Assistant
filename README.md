@@ -34,8 +34,6 @@ Get the application running locally in under a minute.
     python -m http.server 8000 --directory frontend
     ```
 
-3.  **Explore**
-    Open [http://localhost:8000](http://localhost:8000) in your browser.
 
 ---
 
